@@ -1,0 +1,25 @@
+{
+  "empresa": "Electronics México",
+  "direccion": "Benito Juárez, CDMX",
+  "membrete": "membrete.png",
+  "logo": "logo.png",
+  "tarjeta": "tarjeta.jpg",
+  "saludo_sin_contacto": "A quien corresponda:",
+  "condiciones": [
+    "Disponible para entrega inmediata después del pago. CDMX mismo día SIN COSTO, Interior de la república, Envío 2–3 días hábiles se cotiza aparte.",
+    "Garantía de 3 meses directo con nosotros."
+  ],
+  "despedida": "¡Nos encantaría hacer negocios contigo!",
+  "leyenda_precios": "Precios en pesos mexicanos (MXN), IVA incluido.",
+  "vigencia_dias": 7,
+  "folio_inicial": 11095,
+  "mostrar_sku": true,
+  "dias_seguimiento": 3,
+  "colores": {
+    "texto": "#313a4d",
+    "gris": "#666666",
+    "beige": "#d9c4b1",
+    "lineas": "#f3f3f3",
+    "azul": "#1155cc"
+  }
+}

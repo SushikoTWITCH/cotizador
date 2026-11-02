@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cotizador</title>
+<link rel="icon" href="/marca/logo">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1f2633;--mut:#5f6878;--line:#e3e6eb;--nav:#0f3550;--nav-ink:#e8eef4;--acc:#e8773a;--acc-ink:#fff;--beige:#d9c4b1;--beige-bg:#f7f0ea;
+--ok:#1b7f4b;--ok-bg:#e3f5ea;--warn:#8a5a00;--warn-bg:#fff3d3;--err:#b42318;--err-bg:#fde8e6;--info:#1d4f91;--info-bg:#e5eefb;--vio:#6b3fa0;--vio-bg:#f0e8fa}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1318;--card:#171c23;--ink:#e9edf2;--mut:#9aa4b2;--line:#29313b;--nav:#0b2232;--nav-ink:#dfe8f0;--acc:#f08a50;--acc-ink:#1b0d04;--beige:#6b5a4b;--beige-bg:#231e1a;
+--ok:#55c98b;--ok-bg:#13291e;--warn:#f2c46d;--warn-bg:#2b230f;--err:#ff8f84;--err-bg:#2e1514;--info:#8db8ff;--info-bg:#132036;--vio:#c7a4f5;--vio-bg:#241a33}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--nav);color:var(--nav-ink);padding:0 16px;position:sticky;top:0;z-index:10;border-bottom:3px solid var(--acc)}
+.top{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap}
+.top img{height:34px}.top b{font-size:17px;letter-spacing:.2px}
+nav{display:flex;gap:2px;overflow-x:auto;margin-left:auto;scrollbar-width:none}
+nav button{background:none;border:0;color:var(--nav-ink);opacity:.75;font:inherit;padding:16px 12px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px}
+nav button.on{opacity:1;border-bottom-color:#fff;font-weight:600}
+nav .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--acc);color:#fff;font-size:11px;margin-left:4px;font-weight:700}
+main{max-width:1200px;margin:0 auto;padding:18px 16px 60px}
+h2{font-size:20px;margin:6px 0 14px}h3{font-size:15px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+label{display:block;font-size:12.5px;color:var(--mut);margin:0 0 4px}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;min-height:40px}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px}
+button.p,button.s,a.s,button.d{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:9px;border:1px solid var(--line);font:inherit;font-weight:600;cursor:pointer;min-height:40px;text-decoration:none;color:var(--ink);background:var(--card)}
+button.p{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}button.d{color:var(--err)}
+button:disabled{opacity:.5;cursor:wait}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.sp{flex:1}
+.msg{padding:9px 12px;border-radius:8px;margin:10px 0;font-size:14px}.err{background:var(--err-bg);color:var(--err)}.ok{background:var(--ok-bg);color:var(--ok)}.warn{background:var(--warn-bg);color:var(--warn)}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}th{color:var(--mut);font-weight:600;font-size:12.5px;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}tr.click{cursor:pointer}tr.click:hover td{background:var(--beige-bg)}
+.items input{min-height:36px;padding:6px 8px}.items td{padding:5px 4px}.items .num{width:110px;text-align:right}.items .cant{width:70px;text-align:center}.items .sku{width:130px}
+.badge{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+.b-borrador{background:var(--line);color:var(--mut)}.b-enviada{background:var(--info-bg);color:var(--info)}.b-vista{background:var(--vio-bg);color:var(--vio)}.b-negociacion{background:var(--warn-bg);color:var(--warn)}
+.b-aceptada{background:var(--ok-bg);color:var(--ok)}.b-perdida{background:var(--err-bg);color:var(--err)}.b-reemplazada{background:var(--line);color:var(--mut)}.b-vencida{background:var(--err-bg);color:var(--err)}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi b{display:block;font-size:22px}.kpi span{color:var(--mut);font-size:12.5px}
+.tot{display:grid;grid-template-columns:1fr auto;gap:4px 16px;font-size:14px}.tot .big{font-size:22px;font-weight:700}.tot .m{color:var(--mut)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink)}.chip.on{background:var(--nav);color:#fff;border-color:var(--nav)}
+.bar{height:10px;border-radius:5px;background:var(--acc);min-width:2px}.barrow{display:grid;grid-template-columns:minmax(120px,40%) 1fr auto;gap:10px;align-items:center;font-size:13.5px;margin:6px 0}
+.hint{color:var(--mut);font-size:12.5px;margin:6px 0 0}
+dialog{border:0;border-radius:14px;padding:0;width:min(860px,96vw);max-height:92vh;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,30,.5)}
+.dh{position:sticky;top:0;background:var(--nav);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:2}.dh b{font-size:17px}.dh button{margin-left:auto;background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+.db{padding:16px}
+.tl{border-left:2px solid var(--line);margin:6px 0 0 6px;padding-left:14px}.tl div{position:relative;margin:0 0 10px;font-size:13.5px}.tl div::before{content:"";position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--acc)}
+.tl small{color:var(--mut);display:block}
+.empty{color:var(--mut);padding:14px 4px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--nav);color:#fff;padding:10px 16px;border-radius:10px;z-index:50;box-shadow:0 8px 30px rgba(0,0,0,.3);max-width:92vw}
+footer{max-width:1200px;margin:0 auto;padding:0 16px 30px;color:var(--mut);font-size:12.5px}
+.hide{display:none!important}
+.margen-bajo{color:var(--err)!important}.margen-ok{color:var(--ok)!important}
+@media (max-width:700px){.items thead{display:none}.items tr{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}.items td{padding:0;border:0}.items td:nth-child(2){grid-column:1/-1;order:-1}.items td:nth-child(1){grid-column:1/-1;order:-1}.items .sku,.items .num,.items .cant{width:100%}.items td[data-t],.items td[data-m]{align-self:center}main{padding:12px 10px 50px}.card{padding:12px}nav button{padding:14px 9px}}
+</style>
+</head>
+<body>
+<header><div class="top">
+  <img src="/marca/logo" alt="" onerror="this.remove()"><b>Cotizador</b>
+  <nav id="nav">
+    <button data-v="inicio" class="on">Inicio<span class="n hide" id="n-agenda"></span></button>
+    <button data-v="nueva">Nueva cotización</button>
+    <button data-v="lista">Cotizaciones</button>
+    <button data-v="clientes">Clientes</button>
+    <button data-v="stats">Estadísticas</button>
+    <button data-v="ajustes">Ajustes</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ============ INICIO / AGENDA ============ -->
+<section id="v-inicio">
+  <div class="grid g4" id="kpis"></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>📞 Toca dar seguimiento</h3><div id="ag-seg"></div></div>
+    <div class="card"><h3>⏳ Vencen en 3 días</h3><div id="ag-venc"></div></div>
+    <div class="card"><h3>⚠️ Ya vencieron y siguen abiertas</h3><div id="ag-vencidas"></div><p class="hint">Márcalas como aceptadas o perdidas (con su motivo), o haz una nueva versión con precios actualizados.</p></div>
+    <div class="card"><h3>📝 Borradores sin enviar</h3><div id="ag-borr"></div></div>
+  </div>
+</section>
+
+<!-- ============ NUEVA / EDITAR ============ -->
+<section id="v-nueva" class="hide">
+  <h2 id="ed-titulo">Nueva cotización</h2>
+  <div id="ed-aviso"></div>
+  <div class="card">
+    <h3>Cliente</h3>
+    <div class="grid g2">
+      <div><label for="c-empresa">Empresa o cliente *</label><input id="c-empresa" list="dl-clientes" autocomplete="off" placeholder="Escribe y elige si ya existe"><datalist id="dl-clientes"></datalist></div>
+      <div><label for="c-contacto">Contacto (aparece como «Atención:»)</label><input id="c-contacto" placeholder="Lic. Nombre Apellido"></div>
+      <div><label for="c-correo">Correo</label><input id="c-correo" type="email" placeholder="compras@empresa.com"></div>
+      <div><label for="c-tel">Teléfono</label><input id="c-tel" inputmode="tel"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Productos <span class="hint">· precios con IVA incluido · el costo es interno y no sale en el PDF</span></h3>
+    <div class="acts" style="margin:0 0 10px">
+      <input id="buscar-sku" placeholder="Buscar por SKU (inventario o historial)" style="max-width:300px">
+      <button class="s" id="btn-sku">Agregar por SKU</button>
+      <span id="sku-msg" class="hint"></span>
+    </div>
+    <datalist id="dl-productos"></datalist>
+    <div class="scroll"><table class="items"><thead><tr><th>SKU</th><th>Descripción</th><th class="n">Cant.</th><th class="n">Costo c/u</th><th class="n">Precio c/u</th><th class="n">Total</th><th class="n">Margen</th><th></th></tr></thead><tbody id="items"></tbody></table></div>
+    <div class="acts"><button class="s" id="btn-fila">+ Agregar producto</button></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="grid g2">
+        <div><label for="e-envio">Envío ($)</label><input id="e-envio" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
+        <div><label for="e-vig">Vigencia (días)</label><input id="e-vig" type="number" min="1" max="365" inputmode="numeric"></div>
+        <div><label for="e-folio">Folio <span class="hint">(vacío = siguiente automático)</span></label><input id="e-folio" type="number" min="1" inputmode="numeric"></div>
+      </div>
+      <div style="margin-top:12px"><label for="e-ncli">Nota para el cliente (sale en el PDF, 3 líneas máx.)</label><textarea id="e-ncli" maxlength="300" placeholder="Ej. Precio especial por volumen. Entrega en su almacén."></textarea></div>
+      <div style="margin-top:12px"><label for="e-nint">Notas internas (solo tú las ves)</label><textarea id="e-nint" maxlength="2000" placeholder="Ej. Le interesa también el modelo de 27″. Decide el lunes."></textarea></div>
+    </div>
+    <div class="card">
+      <h3>Totales</h3>
+      <div class="tot" id="totales"></div>
+      <div class="acts">
+        <button class="s" id="btn-prev">👁 Vista previa PDF</button><span class="sp"></span>
+        <button class="s hide" id="btn-cancelar">Cancelar edición</button>
+        <button class="p" id="btn-guardar">Guardar y generar PDF</button>
+      </div>
+      <div id="ed-msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LISTA ============ -->
+<section id="v-lista" class="hide">
+  <h2>Cotizaciones</h2>
+  <div class="chips" id="filtros"></div>
+  <div class="acts" style="margin:0 0 12px"><input id="l-q" placeholder="Buscar folio, cliente, producto o SKU" style="max-width:380px"><span class="sp"></span><a class="s" href="/api/exportar.csv">⬇ Exportar a Excel (CSV)</a></div>
+  <div class="card scroll" style="padding:6px"><table><thead><tr><th>Folio</th><th>Fecha</th><th>Cliente</th><th class="n">Total</th><th class="n">Ganancia</th><th>Estado</th><th>Seguimiento</th></tr></thead><tbody id="l-body"></tbody></table></div>
+</section>
+
+<!-- ============ CLIENTES ============ -->
+<section id="v-clientes" class="hide">
+  <h2>Clientes</h2>
+  <div class="acts" style="margin:0 0 12px"><input id="cl-q" placeholder="Buscar cliente" style="max-width:380px"></div>
+  <div class="card scroll" style="padding:6px"><table><thead><tr><th>Empresa</th><th>Contacto</th><th class="n">Cotizaciones</th><th class="n">Cierre</th><th class="n">Comprado</th><th>Última compra</th><th>Cartera</th></tr></thead><tbody id="cl-body"></tbody></table></div>
+  <p class="hint">Cartera: ACTIVO = compró hace 15 días o menos · EN PELIGRO = 16 a 30 · INACTIVO = más de 30 (igual que el HUB).</p>
+</section>
+
+<!-- ============ ESTADÍSTICAS ============ -->
+<section id="v-stats" class="hide">
+  <h2>Estadísticas</h2>
+  <div class="acts" style="margin:0 0 12px"><div><label for="s-desde">Desde</label><input id="s-desde" type="date"></div><div><label for="s-hasta">Hasta</label><input id="s-hasta" type="date"></div><button class="s" id="s-go" style="align-self:flex-end">Aplicar</button></div>
+  <div class="grid g4" id="s-kpis"></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>¿Por qué se pierden?</h3><div id="s-motivos"></div></div>
+    <div class="card"><h3>Por mes</h3><div id="s-mes"></div></div>
+  </div>
+  <div class="card scroll"><h3>Productos más cotizados</h3><table><thead><tr><th>Producto</th><th class="n">Piezas cotizadas</th><th class="n">Piezas vendidas</th><th class="n">Conversión</th><th class="n">Vendido</th></tr></thead><tbody id="s-prod"></tbody></table></div>
+</section>
+
+<!-- ============ AJUSTES ============ -->
+<section id="v-ajustes" class="hide">
+  <h2>Ajustes</h2>
+  <div class="card">
+    <h3>Tu marca en el PDF</h3>
+    <div class="grid g2">
+      <div><label for="m-empresa">Empresa</label><input id="m-empresa"></div>
+      <div><label for="m-direccion">Dirección</label><input id="m-direccion"></div>
+      <div><label for="m-saludo">Saludo si no hay contacto</label><input id="m-saludo"></div>
+      <div><label for="m-despedida">Frase final</label><input id="m-despedida"></div>
+      <div><label for="m-leyenda">Leyenda de precios</label><input id="m-leyenda"></div>
+      <div><label for="m-vig">Vigencia por defecto (días)</label><input id="m-vig" type="number" min="1" max="365"></div>
+      <div><label for="m-folio">Folio inicial</label><input id="m-folio" type="number" min="1"></div>
+      <div><label for="m-dseg">Días para el primer seguimiento al enviar</label><input id="m-dseg" type="number" min="0" max="60"></div>
+    </div>
+    <div style="margin-top:12px"><label for="m-cond">Condiciones (una por línea; se numeran solas)</label><textarea id="m-cond" rows="4"></textarea></div>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--ink);font-size:14px"><input type="checkbox" id="m-sku" style="width:auto;min-height:0"> Mostrar el SKU debajo de cada artículo en el PDF</label>
+    <p class="hint">Logo, membrete y tarjeta: reemplaza los archivos de la carpeta <code>marca</code> (mismos nombres).</p>
+    <div class="acts"><button class="p" id="m-guardar">Guardar marca</button><span id="m-msg"></span></div>
+  </div>
+  <div class="card">
+    <h3>Conexiones y datos</h3>
+    <div class="grid g2">
+      <div><label for="a-inv">URL del Apps Script de inventario (opcional)</label><input id="a-inv" placeholder="https://script.google.com/macros/s/…/exec"><p class="hint">El mismo del Quote Generator del HUB: busca nombre, precio y stock por SKU.</p></div>
+      <div><label for="a-extra">Copiar cada PDF también a esta carpeta (opcional)</label><input id="a-extra" placeholder="G:\Mi unidad\COTIZACIONES"></div>
+    </div>
+    <div class="acts"><button class="p" id="a-guardar">Guardar</button><span id="a-msg"></span></div>
+    <p class="hint" id="a-datos"></p>
+    <div class="acts"><button class="s" id="a-resp">💾 Hacer respaldo</button><input id="a-resp-dest" placeholder="Carpeta del respaldo (vacío = carpeta de datos)" style="max-width:380px"></div>
+    <div class="acts"><label class="s" style="margin:0;cursor:pointer;display:inline-flex;align-items:center;padding:9px 14px;border:1px solid var(--line);border-radius:9px;font-weight:600;color:var(--ink)">⬆ Importar catálogo de productos (CSV)<input type="file" id="a-csv" accept=".csv,text/csv" style="display:none"></label><span class="hint">Columnas: sku, nombre, precio, costo</span></div>
+    <div id="a-msg2"></div>
+  </div>
+</section>
+</main>
+<footer id="credito"></footer>
+
+<dialog id="dlg"><div class="dh"><b id="d-tit"></b><span id="d-badge"></span><button id="d-x" aria-label="Cerrar">×</button></div><div class="db" id="d-body"></div></dialog>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"}); const money=v=>fmt.format(Number(v)||0);
+const fecha=s=>{if(!s)return"";const[y,m,d]=String(s).slice(0,10).split("-");return `${d}/${m}/${y}`};
+const r2=n=>Math.round((Number(n)||0)*100)/100;
+let INFO=null, EDIT=null, FILTRO="abiertas", items=[];
+function toast(t){document.querySelectorAll(".toast").forEach(x=>x.remove());const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),3200)}
+function msg(el,t,c="err"){$(el).innerHTML=t?`<div class="msg ${c}">${esc(t)}</div>`:""}
+async function api(path,body){
+  const r=await fetch(path,body!==undefined?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{});
+  const j=await r.json().catch(()=>({error:"Respuesta inválida del servidor."}));
+  if(!r.ok)throw new Error(j.error||("Error "+r.status)); return j;
+}
+const badge=c=>c.vencida?`<span class="badge b-vencida">Vencida</span> <span class="badge b-${c.estado}">${esc(INFO.estados[c.estado])}</span>`:`<span class="badge b-${esc(c.estado)}">${esc(INFO.estados[c.estado]||c.estado)}</span>`;
+
+/* ---------- navegación ---------- */
+function ver(v){$$("main>section").forEach(s=>s.classList.toggle("hide",s.id!=="v-"+v));$$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  ({inicio:cargarInicio,lista:cargarLista,clientes:cargarClientes,stats:cargarStats,ajustes:cargarAjustes,nueva:()=>{if(!EDIT&&!items.length)nueva()}}[v]||(()=>{}))();window.scrollTo(0,0)}
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(b)ver(b.dataset.v)};
+
+/* ---------- inicio ---------- */
+function mini(lista,campo,vacio){if(!lista.length)return `<p class="empty">${vacio}</p>`;
+  return `<table><tbody>${lista.map(c=>`<tr class="click" data-id="${c.id}"><td><b>${esc(c.folio_txt)}</b><br><small>${esc(c.cliente.empresa)}</small></td><td class="n">${money(c.total)}<br><small>${campo==="seg"?"llamar "+fecha(c.proximo_seguimiento):"vence "+fecha(c.fecha_exp)}</small></td></tr>`).join("")}</tbody></table>`}
+async function cargarInicio(){
+  const [a,s]=await Promise.all([api("/api/agenda"),api("/api/estadisticas")]);
+  const n=a.seguimientos.length+a.vencidas.length; $("#n-agenda").textContent=n; $("#n-agenda").classList.toggle("hide",!n);
+  $("#kpis").innerHTML=[[money(s.monto_abierto),"en cotizaciones abiertas"],[s.tasa_cierre==null?"—":s.tasa_cierre+" %","tasa de cierre"],[money(s.monto_vendido),"vendido (aceptadas)"],[money(s.ganancia_ganada),"ganancia ganada"]].map(([b,t])=>`<div class="kpi"><b>${b}</b><span>${t}</span></div>`).join("");
+  $("#ag-seg").innerHTML=mini(a.seguimientos,"seg","Nada pendiente hoy. 🎉");
+  $("#ag-venc").innerHTML=mini(a.por_vencer,"exp","Ninguna por vencer.");
+  $("#ag-vencidas").innerHTML=mini(a.vencidas,"exp","Ninguna.");
+  $("#ag-borr").innerHTML=mini(a.borradores,"exp","Sin borradores.");
+}
+document.addEventListener("click",e=>{const tr=e.target.closest("tr.click[data-id]");if(tr)abrir(+tr.dataset.id)});
+
+/* ---------- editor ---------- */
+function filaVacia(){return{sku:"",nombre:"",cantidad:1,costo:0,precio:0}}
+function nueva(){EDIT=null;items=[filaVacia()];["#c-empresa","#c-contacto","#c-correo","#c-tel","#e-folio","#e-ncli","#e-nint"].forEach(s=>$(s).value="");
+  $("#e-envio").value=0;$("#e-vig").value=INFO.marca.vigencia_dias;$("#e-folio").disabled=false;$("#ed-titulo").textContent="Nueva cotización";$("#ed-aviso").innerHTML="";
+  $("#btn-cancelar").classList.add("hide");$("#btn-guardar").textContent="Guardar y generar PDF";msg("#ed-msg","");pintarItems()}
+function pintarItems(){
+  $("#items").innerHTML=items.map((it,i)=>{const tot=r2(it.precio*it.cantidad);const m=it.precio>0&&it.costo>0?Math.round((it.precio-it.costo)/it.precio*1000)/10:null;
+    return `<tr data-i="${i}"><td><input class="sku" data-k="sku" value="${esc(it.sku)}" placeholder="SKU" aria-label="SKU"></td>
+    <td><input data-k="nombre" list="dl-productos" value="${esc(it.nombre)}" placeholder="Descripción del producto" aria-label="Descripción"></td>
+    <td><input class="cant" data-k="cantidad" type="number" min="1" step="1" value="${it.cantidad}" inputmode="numeric" aria-label="Cantidad" title="Cantidad"></td>
+    <td><input class="num" data-k="costo" type="number" min="0" step="0.01" value="${it.costo||""}" inputmode="decimal" placeholder="Costo" aria-label="Costo c/u"></td>
+    <td><input class="num" data-k="precio" type="number" min="0" step="0.01" value="${it.precio||""}" inputmode="decimal" placeholder="Precio" aria-label="Precio c/u"></td>
+    <td class="n" data-t>${money(tot)}</td><td class="n ${m==null?"":m<10?"margen-bajo":"margen-ok"}" data-m>${m==null?"—":m+" %"}</td>
+    <td><button class="d" data-del title="Quitar" style="min-height:34px;padding:4px 10px">✕</button></td></tr>`}).join("");
+  totales()}
+function totales(){
+  const env=Number($("#e-envio").value)||0;let sub=0,cos=0,pz=0;items.forEach(i=>{sub+=r2(i.precio*i.cantidad);cos+=r2(i.costo*i.cantidad);pz+=Number(i.cantidad)||0});
+  const tot=sub+env,gan=sub-cos,mar=sub?Math.round(gan/sub*1000)/10:0,iva=tot-r2(tot/1.16);
+  $("#totales").innerHTML=`<span class="m">Productos (${pz} pzas)</span><span>${money(sub)}</span><span class="m">Envío</span><span>${env?money(env):"Sin costo"}</span>
+   <span><b>TOTAL</b></span><span class="big">${money(tot)}</span><span class="m">IVA incluido en el total</span><span class="m">${money(iva)}</span>
+   <span class="m">Costo de productos</span><span class="m">${money(cos)}</span><span><b>Tu ganancia</b></span><span class="${mar<10?"margen-bajo":"margen-ok"}"><b>${money(gan)}</b> (${mar} %)</span>`}
+$("#items").addEventListener("input",e=>{const tr=e.target.closest("tr");if(!tr)return;const i=+tr.dataset.i,k=e.target.dataset.k;if(!k)return;
+  let v=e.target.value;if(k==="cantidad")v=Math.max(1,parseInt(v)||1);else if(k==="costo"||k==="precio")v=Number(v)||0;items[i][k]=v;
+  if(k==="nombre"){const p=PRODS.find(p=>p.nombre===v);if(p){Object.assign(items[i],{sku:p.sku,precio:p.precio,costo:p.costo});pintarItems();return}buscarProductos(v)}
+  const it=items[i];tr.querySelector("[data-t]").textContent=money(r2(it.precio*it.cantidad));
+  const m=it.precio>0&&it.costo>0?Math.round((it.precio-it.costo)/it.precio*1000)/10:null;const mc=tr.querySelector("[data-m]");mc.textContent=m==null?"—":m+" %";mc.className="n "+(m==null?"":m<10?"margen-bajo":"margen-ok");totales()});
+$("#items").addEventListener("click",e=>{if(e.target.closest("[data-del]")){items.splice(+e.target.closest("tr").dataset.i,1);if(!items.length)items.push(filaVacia());pintarItems()}});
+$("#btn-fila").onclick=()=>{items.push(filaVacia());pintarItems();$$("#items tr:last-child input")[1].focus()};
+$("#e-envio").oninput=totales;
+let PRODS=[],tProd=0;
+function buscarProductos(q){clearTimeout(tProd);tProd=setTimeout(async()=>{try{PRODS=await api("/api/productos?limite=30&q="+encodeURIComponent(q||""));$("#dl-productos").innerHTML=PRODS.map(p=>`<option value="${esc(p.nombre)}">${esc(p.sku)} · ${money(p.precio)}</option>`).join("")}catch(_){}},250)}
+let CLIS=[];
+async function cargarListaClientes(){try{CLIS=await api("/api/clientes");$("#dl-clientes").innerHTML=CLIS.map(c=>`<option value="${esc(c.empresa)}">`).join("")}catch(_){}}
+$("#c-empresa").addEventListener("change",()=>{const c=CLIS.find(c=>c.empresa===$("#c-empresa").value);if(c){if(!$("#c-contacto").value)$("#c-contacto").value=c.contacto||"";if(!$("#c-correo").value)$("#c-correo").value=c.correo||"";if(!$("#c-tel").value)$("#c-tel").value=c.telefono||""}});
+async function porSku(){const sku=$("#buscar-sku").value.trim();if(!sku)return;$("#sku-msg").textContent="Buscando…";
+  try{const p=await api("/api/inventario?sku="+encodeURIComponent(sku));const vacia=items.findIndex(i=>!i.nombre&&!i.sku);const it={sku:p.sku||sku,nombre:p.nombre,cantidad:1,precio:Number(p.precio)||0,costo:Number(p.costo)||0};
+    if(vacia>=0)items[vacia]=it;else items.push(it);pintarItems();$("#buscar-sku").value="";$("#sku-msg").textContent=(p.origen==="inventario"?"Del inventario":"De tu historial")+(p.stock!=null&&p.stock!==""?` · stock ${p.stock}`:"")}
+  catch(e){$("#sku-msg").textContent=e.message}}
+$("#btn-sku").onclick=porSku;$("#buscar-sku").onkeydown=e=>{if(e.key==="Enter")porSku()};
+function datosEditor(){return{cliente:{empresa:$("#c-empresa").value,contacto:$("#c-contacto").value,correo:$("#c-correo").value,telefono:$("#c-tel").value},
+  items:items.filter(i=>i.nombre||i.sku||i.precio),envio:$("#e-envio").value,vigencia_dias:$("#e-vig").value,folio:$("#e-folio").value||undefined,
+  notas_cliente:$("#e-ncli").value,notas_internas:$("#e-nint").value}}
+$("#btn-prev").onclick=async()=>{msg("#ed-msg","");const b=$("#btn-prev");b.disabled=true;
+  try{const d=datosEditor();if(EDIT){d.folio=EDIT.folio;d.version=EDIT.estado==="borrador"?EDIT.version:EDIT.version+1}
+    const r=await fetch("/api/vista_previa",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
+    if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.error||"No se pudo generar.")}
+    const url=URL.createObjectURL(await r.blob());window.open(url,"_blank");setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){msg("#ed-msg",e.message)}b.disabled=false};
+$("#btn-guardar").onclick=async()=>{msg("#ed-msg","");const b=$("#btn-guardar");b.disabled=true;
+  try{const c=EDIT?await api(`/api/cotizaciones/${EDIT.id}/editar`,datosEditor()):await api("/api/cotizaciones",datosEditor());
+    toast(EDIT&&EDIT.estado!=="borrador"?`Versión nueva: ${c.folio_txt}`:`Cotización ${c.folio_txt} guardada`);nueva();cargarListaClientes();abrir(c.id)}
+  catch(e){msg("#ed-msg",e.message)}b.disabled=false};
+$("#btn-cancelar").onclick=()=>{nueva()};
+function editar(c){EDIT=c;items=c.items.map(i=>({...i}));$("#c-empresa").value=c.cliente.empresa||"";$("#c-contacto").value=c.cliente.contacto||"";$("#c-correo").value=c.cliente.correo||"";$("#c-tel").value=c.cliente.telefono||"";
+  $("#e-envio").value=c.envio;$("#e-vig").value=Math.max(1,Math.round((new Date(c.fecha_exp)-new Date(c.fecha))/864e5));$("#e-folio").value=c.folio;$("#e-folio").disabled=true;$("#e-ncli").value=c.notas_cliente||"";$("#e-nint").value=c.notas_internas||"";
+  $("#ed-titulo").textContent=`Editar cotización ${c.folio_txt}`;$("#btn-cancelar").classList.remove("hide");
+  $("#ed-aviso").innerHTML=c.estado==="borrador"?`<div class="msg warn">Es un borrador: se corrige en su lugar.</div>`:`<div class="msg warn">Ya está ${esc(INFO.estados[c.estado].toLowerCase())}: al guardar se crea la <b>versión ${c.version+1}</b> y la anterior queda guardada.</div>`;
+  $("#btn-guardar").textContent=c.estado==="borrador"?"Guardar cambios":`Crear versión ${c.version+1}`;pintarItems();$("#dlg").close();ver("nueva")}
+
+/* ---------- detalle ---------- */
+async function abrir(id){let c;try{c=await api("/api/cotizaciones/"+id)}catch(e){return toast(e.message)}
+  $("#d-tit").textContent=`Cotización ${c.folio_txt}`;$("#d-badge").innerHTML=badge(c);
+  const cerr=["aceptada","perdida","reemplazada"].includes(c.estado),cli=c.cliente;
+  const estados=["enviada","vista","negociacion","aceptada"].filter(e=>e!==c.estado);
+  $("#d-body").innerHTML=`
+   <div class="grid g2"><div><b>${esc(cli.empresa)}</b><br>${esc(cli.contacto)}<br>${cli.correo?`<a href="mailto:${esc(cli.correo)}?subject=${encodeURIComponent("Cotización "+c.folio_txt)}">${esc(cli.correo)}</a>`:""} ${cli.telefono?` · <a href="tel:${esc(cli.telefono)}">${esc(cli.telefono)}</a>`:""}</div>
+   <div class="tot"><span class="m">Fecha</span><span>${fecha(c.fecha)}</span><span class="m">Expira</span><span>${fecha(c.fecha_exp)}</span><span><b>Total</b></span><span><b>${money(c.total)}</b></span><span class="m">Ganancia</span><span class="${c.margen<10?"margen-bajo":"margen-ok"}">${money(c.ganancia)} (${c.margen} %)</span></div></div>
+   <div class="acts">${c.tiene_pdf?`<a class="s" href="/api/cotizaciones/${c.id}/pdf" target="_blank">📄 Ver PDF</a><a class="s" href="/api/cotizaciones/${c.id}/pdf?descargar=1">⬇ Descargar</a>`:""}
+     ${c.actual&&!["aceptada","perdida"].includes(c.estado)?`<button class="s" data-ed>✏️ Editar${c.estado==="borrador"?"":" (nueva versión)"}</button>`:""}<button class="s" data-dup>⧉ Duplicar</button></div>
+   <div class="scroll" style="margin-top:12px"><table><thead><tr><th>Producto</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th><th class="n">Costo</th></tr></thead><tbody>${c.items.map(i=>`<tr><td>${esc(i.nombre)}${i.sku?`<br><small class="hint">${esc(i.sku)}</small>`:""}</td><td class="n">${i.cantidad}</td><td class="n">${money(i.precio)}</td><td class="n">${money(i.precio*i.cantidad)}</td><td class="n">${money(i.costo*i.cantidad)}</td></tr>`).join("")}
+     <tr><td>Envío</td><td></td><td></td><td class="n">${c.envio?money(c.envio):"Sin costo"}</td><td></td></tr></tbody></table></div>
+   ${c.notas_internas?`<p class="msg warn">📝 ${esc(c.notas_internas)}</p>`:""}
+   ${c.actual&&!cerr?`<div class="card" style="margin-top:14px"><h3>Seguimiento</h3>
+     <div class="acts" style="margin-top:0">${estados.map(e=>`<button class="s" data-est="${e}">${e==="aceptada"?"✅ ":""}${esc(INFO.estados[e])}</button>`).join("")}<button class="s d" data-perd>❌ Perdida…</button></div>
+     <div id="perd-box" class="hide" style="margin-top:10px"><div class="grid g2"><div><label for="d-motivo">¿Por qué se perdió?</label><select id="d-motivo"><option value="">Elige…</option>${Object.entries(INFO.motivos).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join("")}</select></div><div><label for="d-pnota">Detalle (opcional)</label><input id="d-pnota" placeholder="Ej. La competencia lo dejó en $11,800"></div></div><div class="acts"><button class="p" data-perdok>Marcar como perdida</button></div></div>
+     <div class="grid g2" style="margin-top:12px"><div><label for="d-prox">Próximo seguimiento</label><input id="d-prox" type="date" value="${esc(c.proximo_seguimiento||"")}"></div><div><label for="d-nota">Nota de la llamada / correo</label><input id="d-nota" placeholder="Ej. Pidió precio por 10 piezas"></div></div>
+     <div class="acts"><button class="p" data-nota>Guardar nota</button></div><div id="d-msg"></div></div>`:
+     c.estado==="perdida"?`<p class="msg err">Perdida: ${esc(INFO.motivos[c.motivo_perdida]||"")} ${c.nota_perdida?"— "+esc(c.nota_perdida):""}</p>`:""}
+   ${c.versiones.length>1?`<h3 style="margin-top:14px">Versiones</h3><table><tbody>${c.versiones.map(v=>`<tr class="click" data-id="${v.id}"><td>v${v.version}${v.actual?" (actual)":""}</td><td>${fecha(v.fecha)}</td><td class="n">${money(v.total)}</td><td><span class="badge b-${esc(v.estado)}">${esc(INFO.estados[v.estado])}</span></td></tr>`).join("")}</tbody></table>`:""}
+   <h3 style="margin-top:14px">Historial</h3><div class="tl">${c.eventos.map(e=>`<div>${esc(e.detalle||e.tipo)}<small>${esc(e.fecha.replace("T"," "))} · v${e.version||1} · ${esc(e.tipo)}</small></div>`).join("")}</div>`;
+  const B=$("#d-body"),d=$("#dlg");
+  B.querySelector("[data-ed]")?.addEventListener("click",()=>editar(c));
+  B.querySelector("[data-dup]").onclick=async()=>{try{const n=await api(`/api/cotizaciones/${c.id}/duplicar`,{});toast(`Nueva cotización ${n.folio_txt}`);abrir(n.id)}catch(e){toast(e.message)}};
+  B.querySelectorAll("[data-est]").forEach(b=>b.onclick=async()=>{try{await api(`/api/cotizaciones/${c.id}/estado`,{estado:b.dataset.est,proximo_seguimiento:$("#d-prox").value||null});toast("Estado: "+INFO.estados[b.dataset.est]);abrir(c.id);refrescar()}catch(e){msg("#d-msg",e.message)}});
+  B.querySelector("[data-perd]")?.addEventListener("click",()=>$("#perd-box").classList.toggle("hide"));
+  B.querySelector("[data-perdok]")?.addEventListener("click",async()=>{try{await api(`/api/cotizaciones/${c.id}/estado`,{estado:"perdida",motivo:$("#d-motivo").value,nota:$("#d-pnota").value});toast("Marcada como perdida");abrir(c.id);refrescar()}catch(e){msg("#d-msg",e.message)}});
+  B.querySelector("[data-nota]")?.addEventListener("click",async()=>{try{await api(`/api/cotizaciones/${c.id}/nota`,{texto:$("#d-nota").value,proximo_seguimiento:$("#d-prox").value||null});toast("Nota guardada");abrir(c.id);refrescar()}catch(e){msg("#d-msg",e.message)}});
+  if(!d.open)d.showModal()}
+$("#d-x").onclick=()=>$("#dlg").close();$("#dlg").addEventListener("click",e=>{if(e.target===$("#dlg"))$("#dlg").close()});
+function refrescar(){const v=$("#nav .on")?.dataset.v;if(v==="inicio")cargarInicio();if(v==="lista")cargarLista()}
+
+/* ---------- lista ---------- */
+const FILTROS=[["abiertas","Abiertas"],["","Todas"],["vencida","Vencidas"],["borrador","Borradores"],["enviada","Enviadas"],["vista","Vistas"],["negociacion","En negociación"],["aceptada","Aceptadas"],["perdida","Perdidas"]];
+$("#filtros").innerHTML=FILTROS.map(([k,t])=>`<button class="chip ${k===FILTRO?"on":""}" data-f="${k}">${t}</button>`).join("");
+$("#filtros").onclick=e=>{const b=e.target.closest("[data-f]");if(!b)return;FILTRO=b.dataset.f;$$("#filtros .chip").forEach(x=>x.classList.toggle("on",x===b));cargarLista()};
+let tq=0;$("#l-q").oninput=()=>{clearTimeout(tq);tq=setTimeout(cargarLista,250)};
+async function cargarLista(){const l=await api(`/api/cotizaciones?estado=${encodeURIComponent(FILTRO)}&q=${encodeURIComponent($("#l-q").value)}`);
+  $("#l-body").innerHTML=l.map(c=>`<tr class="click" data-id="${c.id}"><td><b>${esc(c.folio_txt)}</b></td><td>${fecha(c.fecha)}</td><td>${esc(c.cliente.empresa)}</td><td class="n">${money(c.total)}</td><td class="n ${c.margen<10?"margen-bajo":""}">${money(c.ganancia)}</td><td>${badge(c)}</td><td>${c.proximo_seguimiento&&["borrador","enviada","vista","negociacion"].includes(c.estado)?(c.seguimiento_pendiente?"🔔 ":"")+fecha(c.proximo_seguimiento):""}</td></tr>`).join("")||`<tr><td colspan="7" class="empty">No hay cotizaciones aquí.</td></tr>`}
+
+/* ---------- clientes ---------- */
+let tc=0;$("#cl-q").oninput=()=>{clearTimeout(tc);tc=setTimeout(cargarClientes,250)};
+async function cargarClientes(){const l=await api("/api/clientes?q="+encodeURIComponent($("#cl-q").value));const cls={"ACTIVO":"b-aceptada","EN PELIGRO":"b-negociacion","INACTIVO":"b-perdida","SIN COMPRAS":"b-borrador"};
+  $("#cl-body").innerHTML=l.map(c=>`<tr class="click-cli" data-emp="${esc(c.empresa)}" style="cursor:pointer"><td><b>${esc(c.empresa)}</b><br><small class="hint">${esc(c.correo)} ${esc(c.telefono)}</small></td><td>${esc(c.contacto)}</td><td class="n">${c.cotizaciones}</td><td class="n">${c.tasa_cierre==null?"—":c.tasa_cierre+" %"}</td><td class="n">${money(c.total_comprado)}</td><td>${fecha(c.ultima_compra)}</td><td><span class="badge ${cls[c.estado_cartera]}">${c.estado_cartera}</span></td></tr>`).join("")||`<tr><td colspan="7" class="empty">Aún no hay clientes: se guardan solos al hacer cotizaciones.</td></tr>`}
+$("#cl-body").onclick=e=>{const tr=e.target.closest("[data-emp]");if(!tr)return;FILTRO="";$("#l-q").value=tr.dataset.emp;$$("#filtros .chip").forEach(x=>x.classList.toggle("on",x.dataset.f===""));ver("lista")};
+
+/* ---------- estadísticas ---------- */
+async function cargarStats(){const s=await api(`/api/estadisticas?desde=${$("#s-desde").value}&hasta=${$("#s-hasta").value}`);
+  $("#s-kpis").innerHTML=[[s.cotizaciones,"cotizaciones"],[s.tasa_cierre==null?"—":s.tasa_cierre+" %","tasa de cierre"],[money(s.monto_vendido),"vendido"],[money(s.ganancia_ganada),"ganancia ganada"],
+    [money(s.monto_cotizado),"cotizado en total"],[s.ticket_promedio==null?"—":money(s.ticket_promedio),"ticket promedio"],[s.margen_promedio==null?"—":s.margen_promedio+" %","margen promedio"],[s.dias_promedio_cierre==null?"—":s.dias_promedio_cierre+" días","para cerrar (promedio)"],
+    [s.vencidas_sin_cerrar,"vencidas sin cerrar"],[s.cotizaciones_con_cambios,"tuvieron nueva versión"]].map(([b,t])=>`<div class="kpi"><b>${b}</b><span>${t}</span></div>`).join("");
+  const mx=Math.max(1,...s.motivos_perdida.map(m=>m.veces));
+  $("#s-motivos").innerHTML=s.motivos_perdida.map(m=>`<div class="barrow"><span>${esc(m.motivo)}</span><div class="bar" style="width:${m.veces/mx*100}%"></div><b>${m.veces}</b></div>`).join("")||`<p class="empty">Aún no hay cotizaciones perdidas con motivo.</p>`;
+  const mm=Math.max(1,...s.por_mes.map(m=>m.cotizado));
+  $("#s-mes").innerHTML=s.por_mes.slice(-12).map(m=>`<div class="barrow"><span>${esc(m.mes)} · ${m.aceptadas}/${m.cotizaciones}</span><div style="position:relative;height:10px"><div class="bar" style="width:${m.cotizado/mm*100}%;opacity:.3;position:absolute"></div><div class="bar" style="width:${m.vendido/mm*100}%;position:absolute"></div></div><b>${money(m.vendido)}</b></div>`).join("")+(s.por_mes.length?`<p class="hint">Barra clara = cotizado · barra fuerte = vendido · aceptadas/cotizaciones</p>`:`<p class="empty">Sin datos.</p>`);
+  $("#s-prod").innerHTML=s.productos_top.map(p=>`<tr><td>${esc(p.nombre)}<br><small class="hint">${esc(p.sku)}</small></td><td class="n">${p.cotizado}</td><td class="n">${p.vendido}</td><td class="n">${p.cotizado?Math.round(p.vendido/p.cotizado*100):0} %</td><td class="n">${money(p.monto_vendido)}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">Sin datos.</td></tr>`}
+$("#s-go").onclick=cargarStats;
+
+/* ---------- ajustes ---------- */
+function cargarAjustes(){const m=INFO.marca,a=INFO.ajustes;
+  $("#m-empresa").value=m.empresa;$("#m-direccion").value=m.direccion;$("#m-saludo").value=m.saludo_sin_contacto;$("#m-despedida").value=m.despedida;$("#m-leyenda").value=m.leyenda_precios;
+  $("#m-vig").value=m.vigencia_dias;$("#m-folio").value=m.folio_inicial;$("#m-dseg").value=m.dias_seguimiento;$("#m-cond").value=(m.condiciones||[]).join("\n");$("#m-sku").checked=!!m.mostrar_sku;
+  $("#a-inv").value=a.inventario_url;$("#a-extra").value=a.carpeta_pdf_extra;
+  $("#a-datos").innerHTML=`Tus cotizaciones y PDFs se guardan en <code>${esc(INFO.datos)}</code> · Tipografía del PDF: ${INFO.fuentes.sans==="Helvetica"?"<b>Helvetica/Times (corre <code>INSTALAR.bat</code> para bajar Roboto y Merriweather)</b>":"Roboto + Merriweather ✓"}`;
+  const off=!INFO.puede_ajustar;["#m-guardar","#a-guardar"].forEach(s=>$(s).disabled=off)}
+$("#m-guardar").onclick=async()=>{try{INFO.marca=await api("/api/marca",{empresa:$("#m-empresa").value,direccion:$("#m-direccion").value,saludo_sin_contacto:$("#m-saludo").value,despedida:$("#m-despedida").value,leyenda_precios:$("#m-leyenda").value,
+  vigencia_dias:$("#m-vig").value,folio_inicial:$("#m-folio").value,dias_seguimiento:$("#m-dseg").value,condiciones:$("#m-cond").value.split("\n"),mostrar_sku:$("#m-sku").checked});msg("#m-msg","Guardado. Se aplica a los PDF nuevos.","ok")}catch(e){msg("#m-msg",e.message)}};
+$("#a-guardar").onclick=async()=>{try{INFO.ajustes=await api("/api/ajustes",{inventario_url:$("#a-inv").value,carpeta_pdf_extra:$("#a-extra").value});msg("#a-msg","Guardado.","ok")}catch(e){msg("#a-msg",e.message)}};
+$("#a-resp").onclick=async()=>{try{const r=await api("/api/respaldo",{destino:$("#a-resp-dest").value});msg("#a-msg2","Respaldo: "+r.archivo,"ok")}catch(e){msg("#a-msg2",e.message)}};
+$("#a-csv").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const r=await api("/api/productos/importar",{csv:await f.text()});msg("#a-msg2",`Importados ${r.importados} productos${r.errores?` · ${r.errores} filas con error`:""}.`,"ok")}catch(err){msg("#a-msg2",err.message)}e.target.value=""};
+
+/* ---------- arranque ---------- */
+(async()=>{try{INFO=await api("/api/info")}catch(e){document.body.insertAdjacentHTML("afterbegin",`<div class="msg err">No pude hablar con el servidor: ${esc(e.message)}</div>`);return}
+  $("#credito").textContent=INFO.credito+" · v"+INFO.version;cargarListaClientes();buscarProductos("");nueva();cargarInicio()})();
+</script>
+</body>
+</html>
